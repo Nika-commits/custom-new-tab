@@ -10,7 +10,8 @@ function Clock() {
     return () => clearInterval(interval);
   }, []);
 
-  return <div className="text-4xl text-black font-bold">{time}</div>;
+  return <div className="row-span-2">{time}</div>;
 }
+2;
 
 export default Clock;

@@ -5,7 +5,7 @@ function GoogleApps() {
     { name: "YouTube Music", url: "https://music.youtube.com" },
   ];
   return (
-    <div className="flex flex-col align-middle justify-end w-fit space-y-4 mt-4">
+    <div className="row-span-5 col-start-5 w-fit space-y-4 mt-4">
       <p className="text-xs text-gray-500">Google Apps:</p>
       {gApps.map((app, index) => (
         <button

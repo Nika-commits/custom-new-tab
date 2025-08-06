@@ -10,16 +10,18 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md">
-      <div>
-        <label className="text-3xl">Search</label>
-        <input
-          name="q"
-          type="text"
-          placeholder="Search Google..."
-          className="w-full p-3 rounded text-black"
-        />
-      </div>
-    </form>
+    <div className="col-span-3 col-start-2 row-start-3">
+      <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <div>
+          <label className="text-3xl">Search</label>
+          <input
+            name="q"
+            type="text"
+            placeholder="Search Google..."
+            className="w-full p-3 rounded text-black"
+          />
+        </div>
+      </form>
+    </div>
   );
 }
