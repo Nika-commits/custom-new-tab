@@ -7,33 +7,43 @@ function Shortcuts() {
     icon: "",
   });
 
-  const [currentShortcutsArray, setCurrentShortcutsArray] = useState([
-    // Default shortcuts for demo
-    {
-      name: "YouTube",
-      url: "https://youtube.com",
-      icon: "",
-      favicon: "https://www.youtube.com/favicon.ico",
-    },
-    {
-      name: "Gmail",
-      url: "https://gmail.com",
-      icon: "",
-      favicon: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
-    },
-    {
-      name: "GitHub",
-      url: "https://github.com",
-      icon: "",
-      favicon: "https://github.com/favicon.ico",
-    },
-    {
-      name: "Twitter",
-      url: "https://twitter.com",
-      icon: "",
-      favicon: "https://abs.twimg.com/favicons/twitter.2.ico",
-    },
-  ]);
+  // Initialize with localStorage or default shortcuts
+  const [currentShortcutsArray, setCurrentShortcutsArray] = useState(() => {
+    const stored = localStorage.getItem("shortcuts");
+    return stored
+      ? JSON.parse(stored)
+      : [
+          {
+            name: "YouTube",
+            url: "https://youtube.com",
+            icon: "",
+            favicon: "https://www.youtube.com/favicon.ico",
+          },
+          {
+            name: "Gmail",
+            url: "https://gmail.com",
+            icon: "",
+            favicon: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
+          },
+          {
+            name: "GitHub",
+            url: "https://github.com",
+            icon: "",
+            favicon: "https://github.com/favicon.ico",
+          },
+          {
+            name: "Twitter",
+            url: "https://twitter.com",
+            icon: "",
+            favicon: "https://abs.twimg.com/favicons/twitter.2.ico",
+          },
+        ]; // Default fallbacks
+  });
+
+  // Save to localStorage whenever shortcuts array changes
+  useEffect(() => {
+    localStorage.setItem("shortcuts", JSON.stringify(currentShortcutsArray));
+  }, [currentShortcutsArray]);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -117,8 +127,8 @@ function Shortcuts() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Quick Access</h2>
-            <p className="text-slate-400">Your favorite websites at a glance</p>
+            <h2 className="text-2xl font-bold text-white mb-2">Shortcuts</h2>
+            {/* <p className="text-slate-400">Your Shotcuts</p> */}
           </div>
 
           <button
@@ -144,68 +154,7 @@ function Shortcuts() {
           </button>
         </div>
 
-        {/* Add Form */}
-        {showAddForm && (
-          <div className="mb-8 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700/50 p-6 animate-in slide-in-from-top-4 duration-300">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Add New Shortcut
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="block text-slate-300 text-sm font-medium mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="YouTube"
-                  value={currentShortcuts.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-300 text-sm font-medium mb-2">
-                  URL
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://youtube.com"
-                  value={currentShortcuts.url}
-                  onChange={(e) => handleInputChange("url", e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-300 text-sm font-medium mb-2">
-                  Icon (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="📺 or leave empty for auto-icon"
-                  value={currentShortcuts.icon}
-                  onChange={(e) => handleInputChange("icon", e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                />
-                <p className="text-slate-400 text-xs mt-1">
-                  Leave empty to auto-fetch website icon
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={handleSubmit}
-              disabled={!currentShortcuts.name || !currentShortcuts.url}
-              className="bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-              Save Shortcut
-            </button>
-          </div>
-        )}
-
-        {/* Shortcuts Grid */}
+        {/* Shortcuts Grid - NO ADD BUTTON HERE */}
         <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
           {currentShortcutsArray.map((shortcut, index) => (
             <div key={index} className="group relative">
@@ -261,37 +210,10 @@ function Shortcuts() {
               </a>
             </div>
           ))}
-
-          {/* Add New Shortcut Card - also smaller and rounder */}
-          {!showAddForm && (
-            <div className="group">
-              <button
-                onClick={() => setShowAddForm(true)}
-                className="w-14 h-14 bg-slate-900/40 backdrop-blur-md rounded-full border-2 border-dashed border-slate-600/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:border-blue-500/50 flex items-center justify-center mb-2"
-              >
-                <svg
-                  className="w-6 h-6 text-slate-400 group-hover:text-blue-400 transition-colors duration-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </button>
-              <div className="text-slate-400 group-hover:text-blue-300 font-medium text-xs transition-colors duration-300 text-center">
-                Add
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Empty state */}
-        {currentShortcutsArray.length === 0 && (
+        {/* {currentShortcutsArray.length === 0 && (
           <div className="text-center py-12">
             <div className="text-6xl mb-4 opacity-50">🚀</div>
             <h3 className="text-xl font-semibold text-white mb-2">
@@ -307,12 +229,110 @@ function Shortcuts() {
               Add Your First Shortcut
             </button>
           </div>
-        )}
+        )} */}
 
         {/* Decorative elements */}
         <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-full animate-pulse"></div>
         <div className="absolute bottom-4 left-4 w-6 h-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full animate-pulse delay-700"></div>
       </div>
+
+      {/* MODAL OVERLAY FOR ADD FORM */}
+      {showAddForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop blur */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-md"
+            onClick={() => setShowAddForm(false)}
+          ></div>
+
+          {/* Modal content */}
+          <div className="relative bg-slate-900/95 backdrop-blur-md rounded-2xl border border-slate-700/50 p-8 max-w-2xl w-full shadow-2xl animate-in zoom-in-95 duration-300">
+            {/* Close button */}
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="absolute top-4 right-4 w-8 h-8 bg-slate-800/50 hover:bg-red-500 text-slate-400 hover:text-white rounded-full transition-all duration-300 flex items-center justify-center"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            <h3 className="text-2xl font-semibold text-white mb-6">
+              Add New Shortcut
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div>
+                <label className="block text-slate-300 text-sm font-medium mb-2">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="YouTube"
+                  value={currentShortcuts.name}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 text-sm font-medium mb-2">
+                  URL
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://youtube.com"
+                  value={currentShortcuts.url}
+                  onChange={(e) => handleInputChange("url", e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 text-sm font-medium mb-2">
+                  Icon (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="📺 or leave empty for auto-icon"
+                  value={currentShortcuts.icon}
+                  onChange={(e) => handleInputChange("icon", e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/30 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+                <p className="text-slate-400 text-xs mt-1">
+                  Leave empty to auto-fetch website icon
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={handleSubmit}
+                disabled={!currentShortcuts.name || !currentShortcuts.url}
+                className="flex-1 bg-gradient-to-r from-emerald-500 to-blue-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                Save Shortcut
+              </button>
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="px-8 py-3 bg-slate-700/50 text-slate-300 hover:bg-slate-600/50 hover:text-white rounded-xl transition-all duration-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
