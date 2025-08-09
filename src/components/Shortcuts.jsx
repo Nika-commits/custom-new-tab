@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 function Shortcuts() {
   const [currentShortcuts, setCurrentShortcuts] = useState({
     name: "",
@@ -37,7 +36,7 @@ function Shortcuts() {
             icon: "",
             favicon: "https://abs.twimg.com/favicons/twitter.2.ico",
           },
-        ]; // Default fallbacks
+        ];
   });
 
   // Save to localStorage whenever shortcuts array changes
@@ -75,7 +74,7 @@ function Shortcuts() {
       const faviconUrls = getFaviconUrl(currentShortcuts.url);
       const newShortcut = {
         ...currentShortcuts,
-        favicon: faviconUrls[0], // Use Google's favicon service as primary
+        favicon: faviconUrls[0],
       };
       setCurrentShortcutsArray([...currentShortcutsArray, newShortcut]);
       setCurrentShortcuts({ name: "", url: "", icon: "" });
@@ -128,7 +127,6 @@ function Shortcuts() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">Shortcuts</h2>
-            {/* <p className="text-slate-400">Your Shotcuts</p> */}
           </div>
 
           <button
@@ -154,7 +152,7 @@ function Shortcuts() {
           </button>
         </div>
 
-        {/* Shortcuts Grid - NO ADD BUTTON HERE */}
+        {/* Shortcuts Grid */}
         <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
           {currentShortcutsArray.map((shortcut, index) => (
             <div key={index} className="group relative">
@@ -172,19 +170,18 @@ function Shortcuts() {
                     ? shortcut.url
                     : `https://${shortcut.url}`
                 }
-                target="_blank"
+                target="_self"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center"
               >
-                {/* Icon container - circular and smaller */}
-                <div className="w-14 h-14 bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-md rounded-full border border-slate-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:border-blue-500/30 flex items-center justify-center mb-2 group-hover:shadow-blue-500/20">
+                {/* Icon container - blended styling */}
+                <div className="w-14 h-14 bg-slate-800/20 backdrop-blur-sm rounded-full border border-slate-700/20 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-110 hover:border-blue-500/30 flex items-center justify-center mb-2 group-hover:shadow-blue-500/20 hover:bg-slate-700/30">
                   {shortcut.favicon ? (
                     <img
                       src={shortcut.favicon}
                       alt={shortcut.name}
                       className="w-8 h-8 rounded-lg"
                       onError={(e) => {
-                        // Fallback to emoji if favicon fails
                         e.target.style.display = "none";
                         e.target.nextSibling.style.display = "block";
                       }}
@@ -211,29 +208,6 @@ function Shortcuts() {
             </div>
           ))}
         </div>
-
-        {/* Empty state */}
-        {/* {currentShortcutsArray.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4 opacity-50">🚀</div>
-            <h3 className="text-xl font-semibold text-white mb-2">
-              No shortcuts yet
-            </h3>
-            <p className="text-slate-400 mb-6">
-              Add your favorite websites for quick access
-            </p>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-            >
-              Add Your First Shortcut
-            </button>
-          </div>
-        )} */}
-
-        {/* Decorative elements */}
-        <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-4 left-4 w-6 h-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full animate-pulse delay-700"></div>
       </div>
 
       {/* MODAL OVERLAY FOR ADD FORM */}

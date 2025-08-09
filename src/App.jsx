@@ -10,15 +10,15 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-purple-900/10 to-pink-900/5"></div>
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-purple-900/10 to-pink-900/5"></div> */}
 
       {/* Floating background orbs */}
-      <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
+      {/* <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-600/10 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-br from-purple-500/10 to-pink-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 rounded-full blur-3xl animate-pulse delay-500"></div> */}
 
       {/* Subtle grid pattern overlay */}
-      <div
+      {/* <div
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
@@ -27,7 +27,7 @@ function App() {
           `,
           backgroundSize: "50px 50px",
         }}
-      ></div>
+      ></div> */}
 
       {/* Main content grid */}
       <div className="relative z-10 grid grid-cols-5 gap-4 p-4 min-h-screen">
@@ -36,8 +36,8 @@ function App() {
         <SearchBar />
         <Shortcuts />
         <GoogleApps />
-        <Weather />
       </div>
+      <Weather />
 
       {/* Subtle vignette effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950/20 via-transparent to-slate-950/20 pointer-events-none"></div>

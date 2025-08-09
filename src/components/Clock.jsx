@@ -2,81 +2,75 @@ import { useEffect, useState } from "react";
 
 function Clock() {
   const [time, setTime] = useState(new Date());
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setTime(new Date());
     }, 1000);
-    return () => clearInterval(interval);
+
+    // Smooth entrance animation
+    const timer = setTimeout(() => setIsVisible(true), 100);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, []);
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour12: true,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+  const getHours = (date) => {
+    let hours = date.getHours();
+    if (hours === 0) return 12;
+    if (hours > 12) return hours - 12;
+    return hours;
+  };
+
+  const getMinutes = (date) => {
+    return date.getMinutes().toString().padStart(2, "0");
   };
 
   const formatDate = (date) => {
     return date.toLocaleDateString("en-US", {
       weekday: "long",
-      year: "numeric",
       month: "long",
       day: "numeric",
     });
   };
 
-  // const getGreeting = () => {
-  //   const hour = time.getHours();
-  //   if (hour < 12) return "Good Morning";
-  //   if (hour < 17) return "Good Afternoon";
-  //   return "Good Evening";
-  // };
+  const formatYear = (date) => {
+    return date.getFullYear();
+  };
 
   return (
-    <div className="row-span-2 flex items-center justify-center p-8">
-      <div className="relative">
-        {/* Background blur effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-3xl blur-xl transform rotate-1"></div>
-
-        {/* Main clock container */}
-        <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-700/50 p-12 min-w-96">
-          {/* Greeting
-          <div className="text-center mb-8">
-            <p className="text-slate-400 text-lg font-light tracking-wide">
-              {getGreeting()}
-            </p>
-          </div> */}
-
-          {/* Time display */}
-          <div className="text-center mb-6">
-            <div className="font-mono text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-wider">
-              {formatTime(time)}
-            </div>
-
-            {/* Subtle animation dots */}
-            <div className="flex justify-center mt-4 space-x-1">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-75"></div>
-              <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse delay-150"></div>
-            </div>
+    <div className="row-span-2 flex items-center justify-center p-4">
+      <div
+        className={`text-center transition-all duration-700 ${
+          isVisible
+            ? "opacity-100 transform translate-y-0"
+            : "opacity-0 transform translate-y-4"
+        }`}
+      >
+        {/* Vertical time display */}
+        <div className="mb-6">
+          {/* Hours */}
+          <div className="font-mono text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight leading-none mb-2">
+            {getHours(time)}
           </div>
 
-          {/* Date display */}
-          <div className="text-center">
-            <p className="text-slate-300 text-lg font-medium tracking-wide">
-              {formatDate(time)}
-            </p>
+          {/* Minutes */}
+          <div className="font-mono text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight leading-none">
+            {getMinutes(time)}
           </div>
+        </div>
 
-          {/* Decorative elements */}
-          <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full opacity-60"></div>
-          <div className="absolute bottom-4 left-4 w-6 h-6 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full opacity-40"></div>
-
-          {/* Subtle glow effect */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur opacity-50"></div>
+        {/* Date display */}
+        <div className="space-y-2">
+          <div className="text-slate-300 text-base font-medium tracking-wide">
+            {formatDate(time)}
+          </div>
+          <div className="text-slate-500 text-sm font-light">
+            {formatYear(time)}
+          </div>
         </div>
       </div>
     </div>
