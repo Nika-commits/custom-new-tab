@@ -8,7 +8,7 @@ function Weather() {
     icon: "☁️",
   });
 
-  const API_KEY = "89579bffd3dcd527a65fb7e73cb1d5b9"; // your API key
+  const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
   const CITY = "Kathmandu";
 
   useEffect(() => {
