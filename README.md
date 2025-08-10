@@ -18,7 +18,7 @@ https://nika-commits.github.io/custom-new-tab/
 - Dynamic live clock with time and date
 - Personalized welcome message with gradient text
 - Search bar and Google Apps shortcuts
-- Weather widget integration
+- Real-Time weather widget integration using Open Weather API
 - Responsive and modern UI powered by Tailwind CSS
 - Smooth fade-in animations for components
 - LocalStorage support for user shortcuts and preferences
