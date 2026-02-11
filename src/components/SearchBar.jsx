@@ -89,7 +89,7 @@ function SearchBar() {
         className={`relative w-full border transition-all duration-300 group
           ${
             isFocused
-              ? "bg-white border-white"
+              ? "bg-gray-600  border-white"
               : "bg-black border-zinc-800 hover:border-zinc-600"
           }
         `}
@@ -114,7 +114,7 @@ function SearchBar() {
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           onKeyDown={handleKeyDown}
           placeholder="SEARCH_WEB..."
-          className={`w-full bg-transparent py-4 pl-10 pr-4 font-mono text-lg outline-none placeholder:text-zinc-700 uppercase tracking-widest
+          className={`w-full bg-transparent py-4 pl-10 pr-4 font-mono text-lg outline-none placeholder:text-zinc-800 uppercase tracking-widest
             ${isFocused ? "text-black selection:bg-black selection:text-white" : "text-white"}
           `}
           autoComplete="off"
