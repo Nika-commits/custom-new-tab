@@ -1,8 +1,5 @@
 "use client";
 
-import { GripVertical, Loader2, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-// 1. Import createPortal
 import {
   closestCenter,
   DndContext,
@@ -17,9 +14,11 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, Loader2, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-// ... ShortcutItem component remains the same ...
+// --- Sub-Component: Individual Shortcut Card ---
 function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
   const {
     attributes,
@@ -35,17 +34,19 @@ function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
     transition,
   };
 
+  const letter = shortcut.name.charAt(0).toUpperCase();
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative h-20 flex flex-col justify-between
+      className={`group relative h-28 flex flex-col justify-between
         bg-zinc-900 border-2 border-zinc-700
         transition-all duration-200
         ${
           isDragging
             ? "opacity-50 z-50 shadow-none scale-95"
-            : "hover:-translate-y-1 hover:shadow-[3px_3px_0px_0px_#000]"
+            : "hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000]"
         }
       `}
     >
@@ -55,7 +56,7 @@ function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
         {...listeners}
         className="absolute top-0 left-0 p-1 cursor-grab active:cursor-grabbing hover:bg-zinc-800 z-10 text-zinc-600 hover:text-zinc-300 transition-colors"
       >
-        <GripVertical className="w-4 h-4" />
+        <GripVertical className="w-3 h-3" />
       </div>
 
       {/* Remove Button */}
@@ -67,7 +68,7 @@ function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
         className="absolute top-0 right-0 p-1 bg-transparent hover:bg-red-600 text-transparent group-hover:text-zinc-500 hover:text-white transition-colors z-20"
         type="button"
       >
-        <X className="w-4 h-4" />
+        <X className="w-3 h-3" />
       </button>
 
       {/* Main Link Area */}
@@ -80,27 +81,29 @@ function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
         onClick={(e) => {
           if (isDragging) e.preventDefault();
         }}
-        className="flex flex-row items-center justify-start h-full px-3 gap-3 text-left no-underline"
+        className="flex flex-col items-center justify-center h-full p-2 text-center no-underline gap-2"
         target="_self"
         rel="noopener noreferrer"
       >
-        <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-zinc-800 border border-zinc-600">
+        {/* BIGGER ICON CONTAINER (w-12 h-12) */}
+        <div className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-zinc-800 border border-zinc-600 group-hover:bg-zinc-700 transition-colors">
           {shortcut.favicon ? (
             <img
               src={shortcut.favicon}
               alt={shortcut.name}
-              className="w-5 h-5 object-contain"
+              className="w-8 h-8 object-contain"
               onError={() => onFaviconError(shortcut.id)}
               loading="lazy"
             />
           ) : (
-            <span className="text-sm font-mono font-bold text-zinc-400">
-              {shortcut.name.charAt(0).toUpperCase()}
+            <span className="text-xl font-mono font-bold text-zinc-400">
+              {letter}
             </span>
           )}
         </div>
 
-        <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 truncate w-full tracking-wider group-hover:text-zinc-100 transition-colors">
+        {/* Text Area (Below Icon) */}
+        <span className="text-[10px] font-mono font-bold uppercase text-zinc-400 truncate w-full px-1 tracking-wider group-hover:text-zinc-100 transition-colors">
           {shortcut.name}
         </span>
       </a>
@@ -108,7 +111,7 @@ function ShortcutItem({ shortcut, onRemove, onFaviconError }) {
   );
 }
 
-// ... Main Shortcuts Component ...
+// --- Main Shortcuts Component ---
 export default function Shortcuts() {
   const [shortcuts, setShortcuts] = useState(() => {
     if (typeof window === "undefined") return [];
@@ -263,6 +266,26 @@ export default function Shortcuts() {
     <div
       className={`relative w-full max-w-5xl mx-auto transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
     >
+      {/* CUSTOM SCROLLBAR STYLES */}
+      <style>
+        {`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #18181b; /* zinc-900 */
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3f3f46; /* zinc-700 */
+            border: 1px solid #18181b;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #52525b; /* zinc-600 */
+          }
+        `}
+      </style>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-2 border-b border-zinc-800 pb-1">
         <h2 className="text-[10px] font-bold font-mono text-zinc-600 uppercase tracking-widest pl-1">
@@ -277,8 +300,8 @@ export default function Shortcuts() {
         </button>
       </div>
 
-      {/* Grid Area - Scrollable Container */}
-      <div className="max-h-[35vh] overflow-y-auto scrollbar-hide pr-1">
+      {/* Grid Area - Scrollable Container with Custom Scrollbar */}
+      <div className="max-h-[35vh] overflow-y-auto custom-scrollbar pr-1">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -288,7 +311,13 @@ export default function Shortcuts() {
             items={shortcuts.map((s) => s.id)}
             strategy={rectSortingStrategy}
           >
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {/* Responsive Grid:
+               - Mobile: 3 columns
+               - Tablet: 4 columns
+               - Desktop: 6 columns
+               - Large Desktop: 8 columns (High Density)
+            */}
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
               {shortcuts.map((shortcut) => (
                 <ShortcutItem
                   key={shortcut.id}
@@ -310,9 +339,7 @@ export default function Shortcuts() {
         </DndContext>
       </div>
 
-      {/* FIX: Wrapped Modal in createPortal to move it outside the stacking context.
-         Added z-[9999] to ensure it sits on top of everything.
-      */}
+      {/* Modal - Rendered via Portal */}
       {showForm &&
         createPortal(
           <div
@@ -399,7 +426,7 @@ export default function Shortcuts() {
               </form>
             </div>
           </div>,
-          document.body, // Target container
+          document.body,
         )}
     </div>
   );
