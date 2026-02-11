@@ -8,41 +8,38 @@ import "./index.css";
 
 function App() {
   return (
-    <div className="h-screen w-screen bg-zinc-950 relative overflow-hidden selection:bg-white selection:text-black font-mono flex flex-col">
-      {/* Background Texture */}
+    <div className="h-screen w-screen bg-black relative overflow-hidden selection:bg-white selection:text-black font-mono flex flex-col items-center justify-center text-zinc-100">
+      {/* 1. Subtle Texture (Blueprint Grid) */}
       <div
-        className="absolute inset-0 z-0 pointer-events-none opacity-20"
+        className="fixed inset-0 z-0 pointer-events-none opacity-20"
         style={{
-          backgroundImage: "radial-gradient(#3f3f46 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
+          backgroundImage: "radial-gradient(#52525b 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
       ></div>
 
-      {/* Fixed Widgets */}
+      {/* 2. Fixed Widgets (Anchors) */}
       <Weather />
       <GoogleApps />
 
-      {/* Main Content: Flex Column centered vertically */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 gap-6 h-full">
-        {/* TOP SECTION: Tighter grouping of Clock & Welcome */}
-        <div className="flex flex-col items-center gap-4 shrink-0">
+      {/* 3. Main Totem (Centered Stack) */}
+      <main className="relative z-10 w-full max-w-4xl flex flex-col items-center gap-16 p-6">
+        {/* HEADER: Clock & Welcome (Grouped for impact) */}
+        <div className="flex flex-col items-center gap-4">
           <Clock />
           <Welcome />
         </div>
 
-        {/* CENTER SECTION: Search Bar */}
-        <div className="w-full max-w-2xl shrink-0 z-50">
+        {/* INPUT: Search Bar */}
+        <div className="w-full max-w-xl z-50">
           <SearchBar />
         </div>
 
-        {/* BOTTOM SECTION: Shortcuts (Allows internal scrolling if absolutely needed, but tries to fit) */}
-        <div className="w-full max-w-5xl shrink-1 min-h-0">
+        {/* GRID: Shortcuts */}
+        <div className="w-full z-10">
           <Shortcuts />
         </div>
       </main>
-
-      {/* Vignette */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(9,9,11,0.5)_100%)] pointer-events-none z-0"></div>
     </div>
   );
 }

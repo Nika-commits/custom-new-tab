@@ -1,64 +1,56 @@
 import { useSyncExternalStore } from "react";
 
-// Store logic remains the same...
 let timeSnapshot = new Date();
 const listeners = new Set();
+
 setInterval(() => {
   timeSnapshot = new Date();
-  listeners.forEach((listener) => listener());
+  listeners.forEach((l) => l());
 }, 1000);
+
 const subscribe = (cb) => {
   listeners.add(cb);
   return () => listeners.delete(cb);
 };
+
 const getSnapshot = () => timeSnapshot;
 
 function Clock() {
   const time = useSyncExternalStore(subscribe, getSnapshot);
 
-  // Helper functions remain the same...
+  const formatTime = (n) => n.toString().padStart(2, "0");
+
   const getHours = (d) => {
-    let h = d.getHours();
+    const h = d.getHours();
     return h === 0 ? 12 : h > 12 ? h - 12 : h;
   };
-  const getMinutes = (d) => d.getMinutes().toString().padStart(2, "0");
-  const formatDate = (d) =>
-    d
-      .toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      })
-      .toUpperCase();
+
+  const dateStr = time
+    .toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    })
+    .toUpperCase();
 
   return (
-    // Reduced padding and margin
-    <div className="relative border-2 border-zinc-700 bg-zinc-900 shadow-[4px_4px_0px_0px_#000] p-5 min-w-[260px]">
-      {/* Screws */}
-      <div className="absolute top-1.5 left-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
-      <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
-      <div className="absolute bottom-1.5 left-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
-      <div className="absolute bottom-1.5 right-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
-
-      {/* Time Display - Reduced Text Size */}
-      <div className="flex items-baseline justify-center gap-1 mb-2 border-b border-zinc-800 pb-2">
-        <div className="font-mono text-5xl md:text-6xl font-black text-zinc-100 leading-none">
-          {getHours(time)}
-        </div>
-        <div className="font-mono text-4xl md:text-5xl font-bold text-zinc-600 animate-pulse pb-1">
+    <div className="flex flex-col items-center select-none">
+      {/* Huge Time Display */}
+      <div className="flex items-center text-6xl md:text-9xl font-black tracking-tighter leading-none mix-blend-difference text-white">
+        <span>{getHours(time)}</span>
+        <span className="animate-[pulse_2s_steps(120)_infinite] -mt-2 mx-1 text-zinc-600">
           :
-        </div>
-        <div className="font-mono text-5xl md:text-6xl font-black text-zinc-100 leading-none">
-          {getMinutes(time)}
-        </div>
+        </span>
+        <span>{formatTime(time.getMinutes())}</span>
       </div>
 
-      {/* Date Display - Compact */}
-      <div className="flex justify-between items-center bg-zinc-800/50 px-3 py-1 border border-zinc-700/50">
-        <span className="text-zinc-400 text-xs font-mono font-bold tracking-widest">
-          {formatDate(time)}
+      {/* Minimal Date Label */}
+      <div className="mt-4 flex items-center gap-4">
+        <span className="h-px w-12 bg-zinc-800"></span>
+        <span className="text-xs font-bold text-zinc-500 tracking-[0.3em] uppercase">
+          {dateStr}
         </span>
-        <span className="text-[10px] text-zinc-600 font-mono">UTC+0</span>
+        <span className="h-px w-12 bg-zinc-800"></span>
       </div>
     </div>
   );
