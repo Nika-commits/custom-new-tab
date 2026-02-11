@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "es6",
     "jsx": "react",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]

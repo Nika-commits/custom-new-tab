@@ -2,7 +2,7 @@ function GoogleApps() {
   const gApps = [
     {
       name: "Gmail",
-      url: "https://mail.google.com/mail/u/1/#inbox",
+      url: "https://mail.google.com/mail/u/0/#inbox",
       favicon: "https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico",
       color: "from-red-500/20 to-red-600/20",
     },
@@ -55,8 +55,8 @@ function GoogleApps() {
   ];
 
   return (
-    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 flex flex-col items-center space-y-2">
-      <div className="flex flex-col space-y-2">
+    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-20 flex flex-col items-center space-y-2 p-6">
+      <div className="flex flex-col p-4 bg-slate-800/20 backdrop-blur-sm rounded-xl space-y-2">
         {gApps.map((app, index) => (
           <button
             key={`google-app-${index}`}
