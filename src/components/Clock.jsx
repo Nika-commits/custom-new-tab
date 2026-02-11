@@ -1,77 +1,64 @@
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+// Store logic remains the same...
+let timeSnapshot = new Date();
+const listeners = new Set();
+setInterval(() => {
+  timeSnapshot = new Date();
+  listeners.forEach((listener) => listener());
+}, 1000);
+const subscribe = (cb) => {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+};
+const getSnapshot = () => timeSnapshot;
 
 function Clock() {
-  const [time, setTime] = useState(new Date());
-  const [isVisible, setIsVisible] = useState(false);
+  const time = useSyncExternalStore(subscribe, getSnapshot);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    // Smooth entrance animation
-    const timer = setTimeout(() => setIsVisible(true), 100);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const getHours = (date) => {
-    let hours = date.getHours();
-    if (hours === 0) return 12;
-    if (hours > 12) return hours - 12;
-    return hours;
+  // Helper functions remain the same...
+  const getHours = (d) => {
+    let h = d.getHours();
+    return h === 0 ? 12 : h > 12 ? h - 12 : h;
   };
-
-  const getMinutes = (date) => {
-    return date.getMinutes().toString().padStart(2, "0");
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const formatYear = (date) => {
-    return date.getFullYear();
-  };
+  const getMinutes = (d) => d.getMinutes().toString().padStart(2, "0");
+  const formatDate = (d) =>
+    d
+      .toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })
+      .toUpperCase();
 
   return (
-    <div className="row-span-2 flex items-center justify-center p-4">
-      <div
-        className={`text-center transition-all duration-700 ${
-          isVisible
-            ? "opacity-100 transform translate-y-0"
-            : "opacity-0 transform translate-y-4"
-        }`}
-      >
-        {/* Vertical time display */}
-        <div className="mb-6">
-          {/* Hours */}
-          <div className="font-mono text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight leading-none mb-2">
-            {getHours(time)}
-          </div>
+    // Reduced padding and margin
+    <div className="relative border-2 border-zinc-700 bg-zinc-900 shadow-[4px_4px_0px_0px_#000] p-5 min-w-[260px]">
+      {/* Screws */}
+      <div className="absolute top-1.5 left-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
+      <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
+      <div className="absolute bottom-1.5 left-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
+      <div className="absolute bottom-1.5 right-1.5 w-1 h-1 bg-zinc-600 rounded-full" />
 
-          {/* Minutes */}
-          <div className="font-mono text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight leading-none">
-            {getMinutes(time)}
-          </div>
+      {/* Time Display - Reduced Text Size */}
+      <div className="flex items-baseline justify-center gap-1 mb-2 border-b border-zinc-800 pb-2">
+        <div className="font-mono text-5xl md:text-6xl font-black text-zinc-100 leading-none">
+          {getHours(time)}
         </div>
+        <div className="font-mono text-4xl md:text-5xl font-bold text-zinc-600 animate-pulse pb-1">
+          :
+        </div>
+        <div className="font-mono text-5xl md:text-6xl font-black text-zinc-100 leading-none">
+          {getMinutes(time)}
+        </div>
+      </div>
 
-        {/* Date display */}
-        <div className="space-y-2">
-          <div className="text-slate-300 text-base font-medium tracking-wide">
-            {formatDate(time)}
-          </div>
-          <div className="text-slate-500 text-sm font-light">
-            {formatYear(time)}
-          </div>
-        </div>
+      {/* Date Display - Compact */}
+      <div className="flex justify-between items-center bg-zinc-800/50 px-3 py-1 border border-zinc-700/50">
+        <span className="text-zinc-400 text-xs font-mono font-bold tracking-widest">
+          {formatDate(time)}
+        </span>
+        <span className="text-[10px] text-zinc-600 font-mono">UTC+0</span>
       </div>
     </div>
   );

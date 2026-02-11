@@ -12,17 +12,16 @@ function SearchBar() {
     left: 0,
     width: 0,
   });
+
   const inputRef = useRef(null);
-  const suggestionRefs = useRef([]);
   const formRef = useRef(null);
 
-  // Update dropdown position when focused or window resizes
   useEffect(() => {
     const updatePosition = () => {
       if (formRef.current && isFocused) {
         const rect = formRef.current.getBoundingClientRect();
         setDropdownPosition({
-          top: rect.bottom + 8,
+          top: rect.bottom + 8, // slight gap for brutalist separation
           left: rect.left,
           width: rect.width,
         });
@@ -44,7 +43,6 @@ function SearchBar() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch Google autocomplete suggestions (with CORS proxy)
   useEffect(() => {
     if (!query.trim()) {
       setSuggestions([]);
@@ -56,11 +54,10 @@ function SearchBar() {
       try {
         const res = await fetch(
           `https://corsproxy.io/?https://suggestqueries.google.com/complete/search?client=firefox&q=${encodeURIComponent(
-            query
-          )}`
+            query,
+          )}`,
         );
         const data = await res.json();
-        // Limit to 8 suggestions like Google
         setSuggestions((data[1] || []).slice(0, 8));
         setSelectedIndex(-1);
       } catch (error) {
@@ -76,7 +73,7 @@ function SearchBar() {
     const finalQuery = searchQuery.trim();
     if (finalQuery) {
       window.location.href = `https://www.google.com/search?q=${encodeURIComponent(
-        finalQuery
+        finalQuery,
       )}`;
     }
   };
@@ -88,7 +85,7 @@ function SearchBar() {
       case "ArrowDown":
         e.preventDefault();
         setSelectedIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : prev
+          prev < suggestions.length - 1 ? prev + 1 : prev,
         );
         break;
       case "ArrowUp":
@@ -127,10 +124,7 @@ function SearchBar() {
   };
 
   const handleBlur = (e) => {
-    // Don't blur if clicking on a suggestion
-    if (e.relatedTarget?.closest("[data-suggestion]")) {
-      return;
-    }
+    if (e.relatedTarget?.closest("[data-suggestion]")) return;
     setTimeout(() => {
       setIsFocused(false);
       setSelectedIndex(-1);
@@ -140,58 +134,60 @@ function SearchBar() {
   return (
     <div className="col-span-3 col-start-2 row-start-3 flex items-center justify-center p-4">
       <div
-        className={`relative w-full max-w-2xl transition-all duration-700 ${
+        className={`relative w-full max-w-2xl transition-all duration-500 ease-out ${
           isVisible
             ? "opacity-100 transform translate-y-0"
-            : "opacity-0 transform translate-y-4"
+            : "opacity-0 transform translate-y-8"
         }`}
       >
-        {/* Glow background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur-xl opacity-60"></div>
-
-        {/* Search bar */}
         <form
           ref={formRef}
           onSubmit={(e) => {
             e.preventDefault();
             handleSearch();
           }}
-          className="relative bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-600/30 transition-all duration-300"
+          // Brutalist Container: Dark Zinc, Thick Border, Hard Shadow
+          className={`relative bg-zinc-900 border-2 border-zinc-700 transition-all duration-200 ${
+            isFocused
+              ? "shadow-[6px_6px_0px_0px_#3f3f46] border-zinc-500"
+              : "shadow-[4px_4px_0px_0px_#18181b]"
+          }`}
         >
-          {/* Search icon */}
-          <div className="absolute left-6 top-1/2 transform -translate-y-1/2 z-10">
+          {/* Icon */}
+          <div className="absolute left-5 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
             <svg
-              className={`w-6 h-6 transition-all duration-300 ${
-                isFocused ? "text-blue-400 scale-110" : "text-slate-400"
+              className={`w-5 h-5 transition-colors duration-200 ${
+                isFocused ? "text-white" : "text-zinc-500"
               }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
+                strokeLinecap="square" // Sharper lines
+                strokeLinejoin="miter"
+                strokeWidth={2.5}
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
           </div>
 
-          {/* Input */}
           <input
             ref={inputRef}
             type="text"
+            // Display logic to handle showing suggestion when arrowing down
             value={selectedIndex >= 0 ? suggestions[selectedIndex] : query}
             onChange={handleInputChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            placeholder="Search Google..."
-            className="w-full pl-16 pr-16 py-5 bg-transparent rounded-2xl text-white placeholder-slate-400 text-lg focus:outline-none"
+            placeholder="SEARCH_GOOGLE..."
+            // Input Styling: Monospace, Uppercase placeholder, no outline
+            className="w-full pl-14 pr-32 py-4 bg-transparent text-zinc-100 placeholder-zinc-600 text-lg font-mono focus:outline-none tracking-tight uppercase"
             autoComplete="off"
           />
 
-          {/* Clear button */}
+          {/* Clear Button (X) */}
           {query && (
             <button
               type="button"
@@ -201,7 +197,7 @@ function SearchBar() {
                 setSelectedIndex(-1);
                 inputRef.current?.focus();
               }}
-              className="absolute right-20 top-1/2 transform -translate-y-1/2 p-1 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-28 top-1/2 transform -translate-y-1/2 p-2 text-zinc-500 hover:text-white transition-colors"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -213,27 +209,28 @@ function SearchBar() {
             </button>
           )}
 
-          {/* Search button */}
+          {/* Search Button (Right Side) */}
           <button
             type="submit"
-            className={`absolute right-3 top-1/2 transform -translate-y-1/2 px-6 py-2.5 rounded-xl transition-all duration-300 ${
+            className={`absolute right-0 top-0 bottom-0 px-6 font-mono font-bold tracking-wider transition-all duration-200 border-l-2 border-zinc-700 ${
               query.trim()
-                ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:scale-105"
-                : "bg-slate-700/50 text-slate-400 opacity-50 cursor-not-allowed"
+                ? "bg-zinc-100 text-black hover:bg-white hover:pl-8" // Expanding hover effect
+                : "bg-zinc-800 text-zinc-600 cursor-not-allowed"
             }`}
             disabled={!query.trim()}
           >
-            Search
+            GO
           </button>
         </form>
 
-        {/* Suggestions dropdown - rendered as portal */}
+        {/* Dropdown Portal */}
         {isFocused &&
           query.trim() &&
           suggestions.length > 0 &&
           createPortal(
             <div
-              className="fixed bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-600/30 shadow-2xl z-[99999]"
+              // Dropdown styling: Matching brutalist theme, hard shadow
+              className="fixed bg-zinc-900 border-2 border-zinc-700 shadow-[6px_6px_0px_0px_#000000] z-[99999]"
               style={{
                 top: `${dropdownPosition.top}px`,
                 left: `${dropdownPosition.left}px`,
@@ -244,33 +241,25 @@ function SearchBar() {
               {suggestions.map((suggestion, i) => (
                 <button
                   key={i}
-                  ref={(el) => (suggestionRefs.current[i] = el)}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className={`flex items-center w-full text-left px-4 py-3 transition-all duration-200 first:rounded-t-xl last:rounded-b-xl ${
+                  // Item styling: Monospace, sharp borders between items
+                  className={`flex items-center w-full text-left px-5 py-3 font-mono text-sm border-b border-zinc-800 last:border-0 transition-colors duration-100 ${
                     i === selectedIndex
-                      ? "bg-slate-700/70 text-white"
-                      : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+                      ? "bg-zinc-100 text-black font-bold" // Active item inverts colors
+                      : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
                   }`}
                   data-suggestion
                 >
-                  <svg
-                    className="w-4 h-4 mr-3 text-slate-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <span
+                    className={`mr-4 ${i === selectedIndex ? "text-black" : "text-zinc-600"}`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
+                    {">"}
+                  </span>
                   <span className="truncate">{suggestion}</span>
                 </button>
               ))}
             </div>,
-            document.body
+            document.body,
           )}
       </div>
     </div>
